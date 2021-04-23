@@ -1,0 +1,1 @@
+<h2>Hola <?= $nombre ?> <?= date(DATE_RFC2822) ?></h2>
