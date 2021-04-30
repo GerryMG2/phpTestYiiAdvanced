@@ -4,6 +4,22 @@
 
 $this->title = 'My Yii Application';
 ?>
+<?php
+echo "<pre>";
+print_r($empleados);
+echo "</pre>";
+echo "<pre>";
+print_r($count);
+echo "</pre>";
+
+echo "<pre>";
+print_r($unidades);
+echo "</pre>";
+
+echo "<pre>";
+print_r($countUnity);
+echo "</pre>";
+?>
 <div class="site-index">
 
     <div class="jumbotron">

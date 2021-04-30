@@ -14,6 +14,7 @@ use frontend\models\PasswordResetRequestForm;
 use frontend\models\ResetPasswordForm;
 use frontend\models\SignupForm;
 use frontend\models\ContactForm;
+use yii\db\Query;
 
 /**
  * Site controller
@@ -82,7 +83,26 @@ class SiteController extends Controller
      */
     public function actionIndex()
     {
-        return $this->render('index');
+        $empleados = [];
+        $unidades =[];
+        //DAO
+
+        $empleados = Yii::$app->db->createCommand(
+            'select a.*,b.* from unity a left join employee b on a.id = b.unidades;')
+        ->queryAll();
+        $count = Yii::$app->db->createCommand('select count(*) from unity;')->queryScalar();
+            
+        $unidades = (new \yii\db\Query())->select(['id','unidad'])
+        ->from('unity')
+        ->where(['>','id',1])
+        ->limit(10)->all();
+        $query = (new Query())->select('COUNT(*) as total')->from('unity')->one();
+        return $this->render('index',[
+            'empleados' => $empleados,
+            'count' => $count,
+            'unidades' => $unidades,
+            'countUnity' => $query,
+        ]);
     }
 
     /**

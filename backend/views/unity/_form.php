@@ -3,6 +3,7 @@
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 use yii\helpers\Url;
+
 /* @var $this yii\web\View */
 /* @var $model backend\models\Unity */
 /* @var $form yii\widgets\ActiveForm */
@@ -37,3 +38,28 @@ if($model->isNewRecord){
     <?php ActiveForm::end(); ?>
 
 </div>
+
+<?php
+$script = <<< JS
+$('form#{$model->formName()}').on('beforeSubmit', function(e) { 
+    var \$form = $(this); 
+    $.post(
+        \$form.attr("action"), //serlializar el formulario 
+    \$form.serialize()).done(function(result){
+        console.log(result);
+if (result == 1) {
+$(\$form).trigger("reset");
+$(document).find('#modal').modal('hide');
+$.pjax.reload({container: '#unity-grid'});
+}else{
+alert("Ha habido un error de procesamiento")
+}
+})
+.fail(function(){
+console.log("Error ene l servidor")
+});
+return false;
+});
+JS;
+$this->registerJs($script);
+?>

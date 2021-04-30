@@ -55,16 +55,24 @@ class UnityController extends Controller
     }
 
     /**
-     * Displays a single Unity model.
+     * Displays a single Unity model. unidades
      * @param integer $id
      * @return mixed
      * @throws NotFoundHttpException if the model cannot be found
      */
     public function actionView($id)
     {
-        return $this->render('view', [
-            'model' => $this->findModel($id),
-        ]);
+
+        if(Yii::$app->request->isAjax){
+            return $this->renderAjax('view', [
+                'model' => $this->findModel($id),
+            ]);
+        }else{
+            return $this->render('view', [
+                'model' => $this->findModel($id),
+            ]);
+        }
+        
     }
 
     /**
@@ -76,8 +84,13 @@ class UnityController extends Controller
     {
         $model = new Unity();
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+        if ($model->load(Yii::$app->request->post()) ) {
+            if($model->save()){
+                echo 1;
+            }else{
+                echo 0;
+            }
+            
         }
 
         return $this->render('create', [
@@ -96,8 +109,19 @@ class UnityController extends Controller
     {
         $model = $this->findModel($id);
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+        if ($model->load(Yii::$app->request->post())) {
+            if($model->save()){
+                echo 1;
+            }else{
+                echo 0;
+            }
+            
+        }
+
+        if(Yii::$app->request->isAjax){
+            return $this->renderAjax('update', [
+                'model' => $model,
+            ]);
         }
 
         return $this->render('update', [
@@ -121,7 +145,7 @@ class UnityController extends Controller
 
 
     public function actionValidation($id = null){
-        $model = iseet($id) ? $this->findModel($id) : new Unity();
+        $model = isset($id) ? $this->findModel($id) : new Unity();
         if(Yii::$app->request->isAjax && $model->load(Yii::$app->request->post())){
             Yii::$app->response->format = 'json';
             return ActiveForm::validate($model);
